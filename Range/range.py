@@ -2,6 +2,8 @@ import json
 import time
 import properties as pr
 from datetime import datetime, date, timezone, timedelta
+import json
+from logging import getLogger, config
 
 # layer import
 import pandas as pd
@@ -32,13 +34,30 @@ volume = 100
 # client
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
 
+# log message
+statu_queue = "エントリステータスキュー"
+short = " 短期移動平均:"
+medium = " 中期移動平均:"
+long = " 長期移動平均:"
+entry_judge = "エントリーJudge"
+
+with open('../log/log_config.json', 'r') as f:
+    log_conf = json.load(f)
+
+config.dictConfig(log_conf)
+
+logger = getLogger(__name__)
+global chart_data
+
 
 def main():
     """
     main run()
     """
-    global chart_data
-    print("バッチの実行が開始されました")
+
+    # print("バッチの実行が開始されました")
+    logger.info("バッチの実行が開始されました")
+
     while True:
         # 1sおきに実行
         time.sleep(1)
@@ -47,7 +66,7 @@ def main():
             chart_data = get_chart_data()
             # 5,20,50分移動平均の取得
             # 1分足のローソクの本数
-            chart_data_max = len(chart_data)-1
+            chart_data_max = len(chart_data) - 1
             df_short_avg = calc_moving_avg(chart_data, duration_short_term, chart_data_max)
             df_medium_avg = calc_moving_avg(chart_data, duration_medium_term, chart_data_max)
             df_long_avg = calc_moving_avg(chart_data, duration_long_term, chart_data_max)
@@ -58,8 +77,10 @@ def main():
             # entryQueueの初期化処理
             if entry_status_que[0] == 0 or entry_status_que[1] == 0 or entry_status_que[2] == 0:
                 update_entry_status_que(entry_status_que, avg_status)
-                # todo 確認後消す
-                print(entry_status_que, df_short_avg, df_medium_avg, df_long_avg)
+                # log message
+                msg = statu_queue + str(entry_status_que) + short + str(df_short_avg) + medium + str(
+                    df_medium_avg) + long + str(df_long_avg)
+                logger.info(msg)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             elif entry_status_que[2] != avg_status:
@@ -68,7 +89,9 @@ def main():
                 # entryするか判定のためステータス取得
                 # return:long short stay
                 entry_result = judge_entry_point(entry_status_que)
-                print(entry_result, entry_status_que, df_short_avg, df_medium_avg, df_long_avg)
+                msg = entry_judge + str(entry_result) + statu_queue + str(entry_status_que) + short + str(
+                    df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
+                logger.info(msg)
 
                 # entry judge
                 if entry_result == "long":
@@ -81,10 +104,10 @@ def main():
                     close_long_entry()
 
         except BinanceAPIException as e:
-            print(e.status_code)
-            print(e.message)
+            logger.error(e.status_code)
+            logger.error(e.message)
         finally:
-            del(chart_data)
+            del (chart_data)
 
 
 def get_chart_data():
@@ -94,30 +117,32 @@ def get_chart_data():
     """
     data = None
     try:
-        while (data == None):
+        while data is None:
             data = binance.get_historical_klines(pr.symbol, Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
             return data
     except:
-        print("チャートデータの取得に失敗しました")
+        logger.error("チャートデータの取得に失敗しました")
 
 
-def calc_moving_avg(chart_data, duration, chart_data_max):
+def calc_moving_avg(chart_datas, duration, chart_data_max):
     """
     移動平均値を求める
     """
     sma_avg = 0
     for index in range(duration):
-        sma_avg = sma_avg + float(chart_data[chart_data_max - index][4])
+        sma_avg = sma_avg + float(chart_datas[chart_data_max - index][4])
     return sma_avg / duration
 
-def update_entry_status_que(entry_status_que, avg_status):
+
+def update_entry_status_que(entry_status_ques, avg_status):
     """
     chartから取得した、ステータスポジション履歴の更新
     :return: entry_status_que
     """
-    del entry_status_que[0]
-    entry_status_que.append(avg_status)
-    return entry_status_que
+    del entry_status_ques[0]
+    entry_status_ques.append(avg_status)
+    return entry_status_ques
+
 
 def set_entry_status(df_sma5_avg, df_sma20_avg, df_sma50_avg):
     """
@@ -163,78 +188,57 @@ def judge_entry_point(enry_status_que):
 def create_long_entry():
     """
     long entry
-    :return: create_entry_result:結果
     """
     try:
-        order = binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type="MARKET", quantity=volume)
-        print("Enrty long!! symbol:",
-              order["symbol"],
-              "volume:",
-              order["origQty"],
-              "USDT time:",
-              datetime.fromtimestamp(order["updateTime"] / 1000))
-        create_entry_result = "long order success!!"
-        return create_entry_result
+        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type="MARKET", quantity=volume)
+        msg = "Entry long!! long order success!!"
+        logger.info(msg)
     except BinanceAPIException as e:
-        print("long注文に失敗しました")
-        print(e.status_code)
-        print(e.message)
+        logger.error("long注文に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
+
 
 def create_short_entry():
     """
     short entry
-    :return: create_entry_result 結果
     """
     try:
-        order = binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
-        print("Enrty short!! symbol:",
-              order["symbol"],
-              "volume:",
-              order["origQty"],
-              "USDT time:",
-              datetime.fromtimestamp(order["updateTime"] / 1000))
-        create_entry_result = "short order success!!"
-        return create_entry_result
-    except BinanceAPIException:
-        print("short注文に失敗しました")
+        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
+        msg = "Entry short!! short order success!!"
+        logger.info(msg)
+    except BinanceAPIException as e:
+        logger.error("short注文に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
 
 
 def close_long_entry():
     """
     long close
-    :return: create_entry_result:結果
     """
     try:
-        order = binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
-        print("Close long!! symbol:",
-              order["symbol"],
-              "volume:",
-              order["origQty"],
-              "USDT time:",
-              datetime.fromtimestamp(order["updateTime"] / 1000))
-        create_entry_result = "close long success!!"
-        return create_entry_result
-    except BinanceAPIException:
-        print("longポジションの精算に失敗しました")
+        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
+        msg = "Close long!! close long success!!"
+        logger.info(msg)
+    except BinanceAPIException as e:
+        logger.error("longポジションの精算に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
 
 
 def close_short_entry():
     """
     short close
-    :return: create_entry_result 結果
     """
     try:
-        order = binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type='MARKET', quantity=volume)
-        print("Close short!! symbol:",
-              order["symbol"],
-              "volume:",
-              order["origQty"],
-              "USDT time:",
-              datetime.fromtimestamp(order["updateTime"] / 1000))
-        create_entry_result = "close short success!!"
-        return create_entry_result
-    except BinanceAPIException:
-        print("shortポジションの精算に失敗しました")
+        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type='MARKET', quantity=volume)
+        msg = "Close short!! close short success!!"
+        logger.info(msg)
+    except BinanceAPIException as e:
+        logger.error("shortポジションの精算に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
 
 
 # local 動作確認用
