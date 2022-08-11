@@ -34,7 +34,6 @@ binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
 
 
 def main():
-# def lambda_handler(event, context):
     """
     main run()
     """
@@ -93,10 +92,11 @@ def get_chart_data():
     1分足を1日分取得
     :return: data
     """
-    data = ""
+    data = None
     try:
-        data = binance.get_historical_klines(pr.symbol, Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
-        return data
+        while (data == None):
+            data = binance.get_historical_klines(pr.symbol, Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
+            return data
     except:
         print("チャートデータの取得に失敗しました")
 

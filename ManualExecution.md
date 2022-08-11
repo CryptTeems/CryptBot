@@ -1,5 +1,13 @@
 # manual Execution
-- command
+- pythonをサーバで実行するときにinstallするもの
+```
+ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
+
+pip install pandas
+pip install python-binance  
+```
+
+
 ```
 python3
 from binance.client import Client
