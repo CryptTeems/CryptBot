@@ -3,7 +3,7 @@
 ```
 python3
 from binance.client import Client
-client = Client('7MlQofOjfeh6l4lxtGaqLqr04IAxwimmuqYobvozpBmqipd259dZxxHs1tBVu70a', 'eIIwHSRH6bpKAlAmAfhVDMjt1pmRopvSp54uC9fVF09PnYmCwS4ye2rwpsfsWOa3')
+client = Client()
 ```
 - api reference
     - Python Binance 
