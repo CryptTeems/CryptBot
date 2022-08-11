@@ -23,7 +23,7 @@ ENTRY_STATUS6 = "6"
 entry_status_que = [0, 0, 0]
 
 # 取引ボリューム
-volume = 100
+volume = 25
 
 # client
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
@@ -48,7 +48,6 @@ def main():
     main run()
     """
 
-    # print("バッチの実行が開始されました")
     logger.info("バッチの実行が開始されました")
 
     while True:

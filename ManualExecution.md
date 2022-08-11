@@ -6,6 +6,7 @@ source ~/avgbot_app/env/bin/activate
 cd /home/ec2-user/RangeBot/Range/
 pip install pandas
 pip install python-binance 
+rm -r to\ be\ replaced
 git pull https://github.com/shoo5123/RangeBot.git
 nohup python3 range.py &
 ```
@@ -32,7 +33,7 @@ depth = client.get_order_book(symbol='BNBBTC')
 trades = client.get_recent_trades(symbol='BNBBTC')
 info = client.get_all_tickers()
 print(json.dumps(info, indent=4))
-order = client.futures_create_order(symbol="MATICUSDT", side="BUY", type='MARKET', quantity=6)
+order = client.futures_create_order(symbol="MATICUSDT", side="BUY", type='MARKET', quantity=100)
 ```
 
 - testnet cmd
