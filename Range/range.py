@@ -13,9 +13,9 @@ from binance.exceptions import BinanceAPIException
 duration_short_term = 7  # 短期線間隔
 duration_medium_term = 25  # 中期線間隔
 duration_long_term = 99  # 長期線間隔
-df_sma5 = pd.DataFrame()  # 5分移動平均
-df_sma20 = pd.DataFrame()  # 20分移動平均
-df_sma50 = pd.DataFrame()  # 50分移動平均
+df_sma_short = pd.DataFrame()  # 5分移動平均
+df_sma_mid = pd.DataFrame()  # 20分移動平均
+df_sma_long = pd.DataFrame()  # 50分移動平均
 
 # entry_status
 ENTRY_STATUS1 = "1"
@@ -35,11 +35,11 @@ volume = 100
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
 
 # log message
-statu_queue = "エントリステータスキュー"
-short = " 短期移動平均:"
-medium = " 中期移動平均:"
-long = " 長期移動平均:"
-entry_judge = "エントリーJudge"
+statu_queue = " queue"
+short = " MA7:"
+medium = " MA25:"
+long = " MA99:"
+entry_judge = "judge:"
 
 with open('../log/log_config.json', 'r') as f:
     log_conf = json.load(f)
@@ -77,10 +77,6 @@ def main():
             # entryQueueの初期化処理
             if entry_status_que[0] == 0 or entry_status_que[1] == 0 or entry_status_que[2] == 0:
                 update_entry_status_que(entry_status_que, avg_status)
-                # log message
-                msg = statu_queue + str(entry_status_que) + short + str(df_short_avg) + medium + str(
-                    df_medium_avg) + long + str(df_long_avg)
-                logger.info(msg)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             elif entry_status_que[2] != avg_status:
@@ -144,27 +140,27 @@ def update_entry_status_que(entry_status_ques, avg_status):
     return entry_status_ques
 
 
-def set_entry_status(df_sma5_avg, df_sma20_avg, df_sma50_avg):
+def set_entry_status(short_avg, mid_avg, long_avg):
     """
     今の移動平均線のステータスを取得する
     """
     # 1:短→中→長
-    if df_sma5_avg >= df_sma20_avg >= df_sma50_avg:
+    if short_avg >= mid_avg >= long_avg:
         now_chart_status = 1
     # 2:中→短→長
-    elif df_sma20_avg >= df_sma5_avg >= df_sma50_avg:
+    elif mid_avg >= short_avg >= long_avg:
         now_chart_status = 2
     # 3:中→長→短
-    elif df_sma20_avg >= df_sma50_avg >= df_sma5_avg:
+    elif mid_avg >= long_avg >= short_avg:
         now_chart_status = 3
     # 4:長→中→短
-    elif df_sma50_avg >= df_sma20_avg >= df_sma5_avg:
+    elif long_avg >= mid_avg >= short_avg:
         now_chart_status = 4
     # 5:長→短→中
-    elif df_sma50_avg >= df_sma5_avg >= df_sma20_avg:
+    elif long_avg >= short_avg >= mid_avg:
         now_chart_status = 5
     # 6:短→長→中
-    elif df_sma5_avg >= df_sma50_avg >= df_sma20_avg:
+    elif short_avg >= long_avg >= mid_avg:
         now_chart_status = 6
     return now_chart_status
 
