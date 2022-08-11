@@ -1,21 +1,15 @@
-import json
 import time
 import properties as pr
-from datetime import datetime, date, timezone, timedelta
 import json
 from logging import getLogger, config
 
 # layer import
-import pandas as pd
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 
 duration_short_term = 7  # 短期線間隔
 duration_medium_term = 25  # 中期線間隔
 duration_long_term = 99  # 長期線間隔
-df_sma_short = pd.DataFrame()  # 5分移動平均
-df_sma_mid = pd.DataFrame()  # 20分移動平均
-df_sma_long = pd.DataFrame()  # 50分移動平均
 
 # entry_status
 ENTRY_STATUS1 = "1"
@@ -47,7 +41,6 @@ with open('../log/log_config.json', 'r') as f:
 config.dictConfig(log_conf)
 
 logger = getLogger(__name__)
-global chart_data
 
 
 def main():
@@ -64,9 +57,11 @@ def main():
         try:
             # chartDataの取得
             chart_data = get_chart_data()
-            # 5,20,50分移動平均の取得
+
             # 1分足のローソクの本数
             chart_data_max = len(chart_data) - 1
+
+            # 短中長の移動平均線取得
             df_short_avg = calc_moving_avg(chart_data, duration_short_term, chart_data_max)
             df_medium_avg = calc_moving_avg(chart_data, duration_medium_term, chart_data_max)
             df_long_avg = calc_moving_avg(chart_data, duration_long_term, chart_data_max)
@@ -103,7 +98,7 @@ def main():
             logger.error(e.status_code)
             logger.error(e.message)
         finally:
-            del (chart_data)
+            del chart_data
 
 
 def get_chart_data():
