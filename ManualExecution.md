@@ -2,14 +2,22 @@
 - pythonをサーバ実行手順
 ```
 ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
-source ~/avgbot_app/env/bin/activate
 cd /home/ec2-user/RangeBot/Range/
-pip install pandas
+source ~/avgbot_app/env/bin/activate
 pip install python-binance 
 rm -r to\ be\ replaced
 git pull https://github.com/shoo5123/RangeBot.git
-nohup python3 range.py &
+nohup python3 /home/ec2-user/RangeBot/Range/range.py &
 ```
+- 仮想環境立ち上げ
+```
+python3 -m venv avgbot_app/env
+source ~/avgbot_app/env/bin/activate
+pip install pip --upgrade
+git clone https://github.com/shoo5123/RangeBot.git
+pip install python-binance
+```
+
 - ロググループ再セット
 - 参考　https://business.ntt-east.co.jp/content/cloudsolution/column-try-28.html
 ```
