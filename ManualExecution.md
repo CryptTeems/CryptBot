@@ -6,6 +6,7 @@ source ~/avgbot_app/env/bin/activate
 cd /home/ec2-user/RangeBot/Range/
 pip install pandas
 pip install python-binance 
+rm -r to\ be\ replaced
 git pull https://github.com/shoo5123/RangeBot.git
 nohup python3 range.py &
 ```

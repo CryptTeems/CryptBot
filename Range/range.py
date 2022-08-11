@@ -48,7 +48,6 @@ def main():
     main run()
     """
 
-    # print("バッチの実行が開始されました")
     logger.info("バッチの実行が開始されました")
 
     while True:
