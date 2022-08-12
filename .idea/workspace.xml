@@ -213,7 +213,28 @@
       <option name="project" value="LOCAL" />
       <updated>1660217308255</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="make Master">
+      <created>1660230264916</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1660230264916</updated>
+    </task>
+    <task id="LOCAL-00017" summary="make Master">
+      <created>1660236164597</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1660236164597</updated>
+    </task>
+    <task id="LOCAL-00018" summary="make Master">
+      <created>1660239966660</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1660239966660</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
