@@ -53,6 +53,7 @@ def main():
     while True:
         # 1sおきに実行
         time.sleep(1)
+        logger.info("roop")
         try:
             # chartDataの取得
             chart_data = get_chart_data()
