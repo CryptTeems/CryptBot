@@ -23,7 +23,7 @@ ENTRY_STATUS6 = "6"
 entry_status_que = [0, 0, 0]
 
 # 取引ボリューム
-volume = 25
+volume = 100
 
 # client
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})

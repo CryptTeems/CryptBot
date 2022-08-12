@@ -44,6 +44,13 @@ print(json.dumps(info, indent=4))
 order = client.futures_create_order(symbol="MATICUSDT", side="BUY", type='MARKET', quantity=100)
 ```
 
+- 集計用
+```
+webサイトで取得
+https://www.binance.com/ja/my/orders/futures/tradehistory
+```
+
+
 - testnet cmd
 ```
 client = Client(api_key, api_secret, testnet=True)
