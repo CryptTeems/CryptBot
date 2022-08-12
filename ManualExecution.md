@@ -1,15 +1,9 @@
 # manual Execution
 - ソース入れ替えしたときの再実行手順
+- todo shell化
 ```
 ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
-sudo rm -r RangeBot/
-sudo rm -r avgbot_app/
-python3 -m venv avgbot_app/env
-source ~/avgbot_app/env/bin/activate
-pip install pip --upgrade
-git clone https://github.com/shoo5123/RangeBot.git
-pip install python-binance
-nohup python3 /home/ec2-user/RangeBot/Range/range.py &
+   todo shellji実行
 ```
 - トラブル時のコマンド
 ```
