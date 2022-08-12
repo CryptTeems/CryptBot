@@ -1,16 +1,19 @@
 # manual Execution
-- pythonをサーバ実行手順
+- ソース入れ替えしたときの再実行手順
 ```
 ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
-cd /home/ec2-user/RangeBot/Range/
+sudo rm -r RangeBot/
+sudo rm -r avgbot_app/
+python3 -m venv avgbot_app/env
 source ~/avgbot_app/env/bin/activate
-pip install python-binance 
-rm -r to\ be\ replaced
-git pull https://github.com/shoo5123/RangeBot.git
+pip install pip --upgrade
+git clone https://github.com/shoo5123/RangeBot.git
+pip install python-binance
 nohup python3 /home/ec2-user/RangeBot/Range/range.py &
 ```
-- 仮想環境立ち上げ
+- トラブル時のコマンド
 ```
+rm -r to\ be\ replaced 
 python3 -m venv avgbot_app/env
 source ~/avgbot_app/env/bin/activate
 pip install pip --upgrade
