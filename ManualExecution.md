@@ -11,6 +11,7 @@ pip install pip --upgrade
 git clone https://github.com/shoo5123/RangeBot.git
 pip install python-binance
 cd /home/ec2-user/RangeBot/Range
+cp /dev/null to\ be\ replaced 
 nohup python3 /home/ec2-user/RangeBot/Range/range.py &
 ```
 - トラブル時のコマンド
