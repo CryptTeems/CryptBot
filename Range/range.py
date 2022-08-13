@@ -112,7 +112,7 @@ def main():
                         close_long_entry(pr.symbol, Client.SIDE_SELL, "MARKET", volume)
 
                     # current_positionの更新
-                    current_position_status = "long_position"
+                    current_position_status = "short_position"
 
                     msg = "execute short success!!"
                     logger.info(msg)
