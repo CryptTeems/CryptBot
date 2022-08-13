@@ -29,11 +29,13 @@ volume = 200
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
 
 # log message
-statu_queue = " queue"
+statu_queue = ", queue"
 short = " MA7:"
 medium = " MA25:"
 long = " MA99:"
-entry_judge = "judge:"
+entry_judge = " judge:"
+current_position = " current_position:"
+
 
 with open('../log/log_config.json', 'r') as f:
     log_conf = json.load(f)
@@ -47,6 +49,9 @@ def main():
     """
     main run()
     """
+    # current position
+    # no_position long_position short_position
+    current_position_status = "no_position"
 
     logger.info("バッチの実行が開始されました")
 
@@ -79,19 +84,38 @@ def main():
                 # entryするか判定のためステータス取得
                 # return:long short stay
                 entry_result = judge_entry_point(entry_status_que)
-                msg = entry_judge + str(entry_result) + statu_queue + str(entry_status_que) + short + str(
+                msg = current_position + current_position_status + entry_judge + str(entry_result) + statu_queue + str(entry_status_que) + short + str(
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
                 logger.info(msg)
 
-                # entry judge
+                # entry judge symbol=pr.symbol, side=Client.SIDE_BUY, type="MARKET", quantity=volume
                 if entry_result == "long":
                     # longEntryとshortの精算
-                    create_long_entry()
-                    close_short_entry()
+                    create_long_entry(pr.symbol, Client.SIDE_BUY, "MARKET", volume)
+
+                    # 初期状態は決済しない
+                    if current_position_status != "no_position":
+                        close_short_entry(pr.symbol, Client.SIDE_BUY, "MARKET", volume)
+
+                    # current_positionの更新
+                    current_position_status = "long_position"
+
+                    msg = "execute long success!!"
+                    logger.info(msg)
+
                 elif entry_result == "short":
                     # shortEntryとlongの精算
-                    create_short_entry()
-                    close_long_entry()
+                    create_short_entry(pr.symbol, Client.SIDE_SELL, "MARKET", volume)
+
+                    # 初期状態は決済しない
+                    if current_position_status != "no_position":
+                        close_long_entry(pr.symbol, Client.SIDE_SELL, "MARKET", volume)
+
+                    # current_positionの更新
+                    current_position_status = "long_position"
+
+                    msg = "execute short success!!"
+                    logger.info(msg)
 
         except BinanceAPIException as e:
             logger.error(e.status_code)
@@ -175,56 +199,48 @@ def judge_entry_point(enry_status_que):
         return "stay"
 
 
-def create_long_entry():
+def create_long_entry(sym, si, ty, qua):
     """
     long entry
     """
     try:
-        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type="MARKET", quantity=volume)
-        msg = "Entry long!! long order success!!"
-        logger.info(msg)
+        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
     except BinanceAPIException as e:
         logger.error("long注文に失敗しました")
         logger.error(e.status_code)
         logger.error(e.message)
 
 
-def create_short_entry():
+def create_short_entry(sym, si, ty, qua):
     """
     short entry
     """
     try:
-        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
-        msg = "Entry short!! short order success!!"
-        logger.info(msg)
+        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
     except BinanceAPIException as e:
         logger.error("short注文に失敗しました")
         logger.error(e.status_code)
         logger.error(e.message)
 
 
-def close_long_entry():
+def close_long_entry(sym, si, ty, qua):
     """
     long close
     """
     try:
-        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_SELL, type='MARKET', quantity=volume)
-        msg = "Close long!! close long success!!"
-        logger.info(msg)
+        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
     except BinanceAPIException as e:
         logger.error("longポジションの精算に失敗しました")
         logger.error(e.status_code)
         logger.error(e.message)
 
 
-def close_short_entry():
+def close_short_entry(sym, si, ty, qua):
     """
     short close
     """
     try:
-        binance.futures_create_order(symbol=pr.symbol, side=Client.SIDE_BUY, type='MARKET', quantity=volume)
-        msg = "Close short!! close short success!!"
-        logger.info(msg)
+        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
     except BinanceAPIException as e:
         logger.error("shortポジションの精算に失敗しました")
         logger.error(e.status_code)
