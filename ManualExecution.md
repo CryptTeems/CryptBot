@@ -47,7 +47,7 @@ depth = client.get_order_book(symbol='BNBBTC')
 trades = client.get_recent_trades(symbol='BNBBTC')
 info = client.get_all_tickers()
 print(json.dumps(info, indent=4))
-order = client.futures_create_order(symbol="MATICUSDT", side="BUY", type='MARKET', quantity=100)
+order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='MARKET', quantity=100)
 ```
 
 - 集計用
