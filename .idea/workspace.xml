@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="">
+    <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master">
       <change afterPath="$PROJECT_DIR$/infra/AWS_SecretManager_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ManualExecution.md" beforeDir="false" afterPath="$PROJECT_DIR$/ManualExecution.md" afterDir="false" />
@@ -117,6 +117,14 @@
       <option name="presentableId" value="Default" />
       <updated>1656569723039</updated>
     </task>
+    <task id="LOCAL-00001" summary="make Master">
+      <created>1660386478739</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1660386478739</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -129,5 +137,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="make Master" />
+    <option name="LAST_COMMIT_MESSAGE" value="make Master" />
   </component>
 </project>

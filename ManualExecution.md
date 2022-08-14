@@ -28,6 +28,7 @@ pip install python-binance
 - 参考　https://business.ntt-east.co.jp/content/cloudsolution/column-try-28.html
 ```
 sudo systemctl start awslogsd
+sudo systemctl status awslogsd
 ```
 
 - api reference
@@ -63,4 +64,6 @@ client = Client(api_key, api_secret, testnet=True)
 ```
 
 
+aws secretsmanager get-secret-value --region ap-northeast-1 --secret-id arn:aws:secretsmanager:ap-northeast-1:757856472455:secret:prpd/binanceRangeKey-Mf1YMz
+aws secretsmanager get-secret-value --region ${REGION} --secret-id ${SECRETS_ID} 
 
