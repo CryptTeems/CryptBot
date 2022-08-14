@@ -36,7 +36,7 @@ long = " MA99:"
 entry_judge = " judge:"
 current_position = " current_position:"
 
-
+# todo logRename path変更
 with open('../log/log_config.json', 'r') as f:
     log_conf = json.load(f)
 
@@ -88,7 +88,9 @@ def main():
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
                 logger.info(msg)
 
-                # entry judge symbol=pr.symbol, side=Client.SIDE_BUY, type="MARKET", quantity=volume
+                # entry judge
+                # todo init処理を分ける
+                # todo エントリーをモジュール化
                 if entry_result == "long":
                     # longEntryとshortの精算
                     create_long_entry(pr.symbol, Client.SIDE_BUY, "MARKET", volume)
