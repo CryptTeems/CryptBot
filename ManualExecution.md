@@ -28,6 +28,7 @@ pip install python-binance
 - 参考　https://business.ntt-east.co.jp/content/cloudsolution/column-try-28.html
 ```
 sudo systemctl start awslogsd
+sudo systemctl status awslogsd
 ```
 
 - api reference
@@ -48,6 +49,8 @@ trades = client.get_recent_trades(symbol='BNBBTC')
 info = client.get_all_tickers()
 print(json.dumps(info, indent=4))
 order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='MARKET', quantity=100)
+order = client.futures_create_order(symbol="MATICUSDT", side="SELL", type='MARKET', quantity=6)
+order = client.futures_position_information(symbol="MATICUSDT")
 ```
 
 - 集計用
@@ -63,4 +66,5 @@ client = Client(api_key, api_secret, testnet=True)
 ```
 
 
-
+info = client.futures_income_history()
+print(json.dumps(info, indent=4))
