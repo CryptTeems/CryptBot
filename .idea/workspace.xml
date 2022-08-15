@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master" />
+    <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master">
+      <change afterPath="$PROJECT_DIR$/analysis/analysis_range.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ManualExecution.md" beforeDir="false" afterPath="$PROJECT_DIR$/ManualExecution.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Range/range.py" beforeDir="false" afterPath="$PROJECT_DIR$/Range/range.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Range/to be replaced" beforeDir="false" afterPath="$PROJECT_DIR$/Range/to be replaced" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,13 +33,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "settings.editor.selected.configurable": "Errors"
   }
-}</component>
-  <component name="RunManager" selected="Python.AWS_SecretManager_client">
+}]]></component>
+  <component name="RunManager" selected="Python.python range.py">
     <configuration name="AWS_SecretManager_client" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="RangeBot" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -127,7 +134,21 @@
       <option name="project" value="LOCAL" />
       <updated>1660458483865</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="make Master">
+      <created>1660459886812</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1660459886812</updated>
+    </task>
+    <task id="LOCAL-00004" summary="make Master">
+      <created>1660460010246</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1660460010246</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

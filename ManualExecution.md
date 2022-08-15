@@ -49,6 +49,8 @@ trades = client.get_recent_trades(symbol='BNBBTC')
 info = client.get_all_tickers()
 print(json.dumps(info, indent=4))
 order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='MARKET', quantity=100)
+order = client.futures_create_order(symbol="MATICUSDT", side="SELL", type='MARKET', quantity=6)
+order = client.futures_position_information(symbol="MATICUSDT")
 ```
 
 - 集計用
@@ -64,6 +66,5 @@ client = Client(api_key, api_secret, testnet=True)
 ```
 
 
-aws secretsmanager get-secret-value --region ap-northeast-1 --secret-id arn:aws:secretsmanager:ap-northeast-1:757856472455:secret:prpd/binanceRangeKey-Mf1YMz
-aws secretsmanager get-secret-value --region ${REGION} --secret-id ${SECRETS_ID} 
-
+info = client.futures_income_history()
+print(json.dumps(info, indent=4))

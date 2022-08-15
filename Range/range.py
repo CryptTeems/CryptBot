@@ -19,8 +19,7 @@ ENTRY_STATUS4 = "4"
 ENTRY_STATUS5 = "5"
 ENTRY_STATUS6 = "6"
 
-# entryを行うためのステータスを３つもつ配列
-entry_status_que = [0, 0, 0]
+
 
 # 取引ボリューム
 volume = 800
@@ -34,7 +33,7 @@ short = " MA7:"
 medium = " MA25:"
 long = " MA99:"
 entry_judge = " judge:"
-current_position = " current_position:"
+current_side_msg = "current_side:"
 
 # todo logRename path変更
 with open('../log/log_config.json', 'r') as f:
@@ -49,11 +48,10 @@ def main():
     """
     main run()
     """
-    # current position
-    # no_position long_position short_position
-    current_position_status = "no_position"
-
     logger.info("バッチの実行が開始されました")
+
+    # entryを行うためのステータスを３つもつ配列
+    entry_status_que = [0, 0, 0]
 
     while True:
         # 1sおきに実行
@@ -73,51 +71,34 @@ def main():
             # 現在の平均線からステータスポジションの取得
             avg_status = set_entry_status(df_short_avg, df_medium_avg, df_long_avg)
 
+            # 今のpositionの取得
+            # 0:no_position 1:long 2:short
+            current_side = current_position_side(pr.symbol)
+
             # entryQueueの初期化処理
-            if entry_status_que[0] == 0 or entry_status_que[1] == 0 or entry_status_que[2] == 0:
-                update_entry_status_que(entry_status_que, avg_status)
+            while entry_status_que[0] == 0 or entry_status_que[1] == 0 or entry_status_que[2] == 0:
+                entry_status_que = init_entry_status_que(entry_status_que, avg_status)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
-            elif entry_status_que[2] != avg_status:
+            if entry_status_que[2] != avg_status:
                 # Queue履歴更新
                 update_entry_status_que(entry_status_que, avg_status)
-                # entryするか判定のためステータス取得
-                # return:long short stay
+
+                # entry判定
+                # 1:long 2:short 0:stay
                 entry_result = judge_entry_point(entry_status_que)
-                msg = current_position + current_position_status + entry_judge + str(entry_result) + statu_queue + str(entry_status_que) + short + str(
+
+                # entry
+                # 0:stayはなにもしない
+                entry(pr.symbol, "MARKET", volume, entry_result)
+
+                # ポジションを解除
+                # 0:no_positionはなにもしない
+                close_entry(pr.symbol, "MARKET", volume, current_side)
+
+            msg = str(current_side) + statu_queue + str(entry_status_que) + short + str(
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
-                logger.info(msg)
-
-                # entry judge
-                # todo init処理を分ける
-                # todo エントリーをモジュール化
-                if entry_result == "long":
-                    # longEntryとshortの精算
-                    create_long_entry(pr.symbol, Client.SIDE_BUY, "MARKET", volume)
-
-                    # 初期状態は決済しない
-                    if current_position_status != "no_position":
-                        close_short_entry(pr.symbol, Client.SIDE_BUY, "MARKET", volume)
-
-                    # current_positionの更新
-                    current_position_status = "long_position"
-
-                    msg = "execute long success!!"
-                    logger.info(msg)
-
-                elif entry_result == "short":
-                    # shortEntryとlongの精算
-                    create_short_entry(pr.symbol, Client.SIDE_SELL, "MARKET", volume)
-
-                    # 初期状態は決済しない
-                    if current_position_status != "no_position":
-                        close_long_entry(pr.symbol, Client.SIDE_SELL, "MARKET", volume)
-
-                    # current_positionの更新
-                    current_position_status = "short_position"
-
-                    msg = "execute short success!!"
-                    logger.info(msg)
+            logger.info(msg)
 
         except BinanceAPIException as e:
             logger.error(e.status_code)
@@ -184,6 +165,15 @@ def set_entry_status(short_avg, mid_avg, long_avg):
         now_chart_status = 6
     return now_chart_status
 
+def init_entry_status_que(que, status):
+    """
+    entry_status_queueの初期化処理
+    :param que:entry_status_queue
+    :param status: chart_status
+    :return: que
+    """
+    status_queue = update_entry_status_que(que, status)
+    return status_queue
 
 def judge_entry_point(enry_status_que):
     """
@@ -194,11 +184,11 @@ def judge_entry_point(enry_status_que):
     それ意外:stay
     """
     if enry_status_que[0] == 5 and enry_status_que[1] == 6 and enry_status_que[2] == 1:
-        return "long"
+        return 1
     elif enry_status_que[0] == 2 and enry_status_que[1] == 3 and enry_status_que[2] == 4:
-        return "short"
+        return 2
     else:
-        return "stay"
+        return 0
 
 
 def create_long_entry(sym, si, ty, qua):
@@ -247,6 +237,71 @@ def close_short_entry(sym, si, ty, qua):
         logger.error("shortポジションの精算に失敗しました")
         logger.error(e.status_code)
         logger.error(e.message)
+
+
+def current_position_side(sym):
+    """
+    保持しているオーダーのsideを判定
+    :return: 0:no_position 1:long_position 2:short_position
+    """
+    try:
+        # current_position_orderの取得
+        now_order = binance.futures_position_information(symbol=sym)
+        position_amt = now_order[0]["positionAmt"]
+
+        # side判定
+        if int(position_amt) == 0:
+            return 0
+        elif int(position_amt) > 0:
+            return 1
+        elif int(position_amt) < 0:
+            return 2
+
+    except BinanceAPIException as e:
+        logger.error("positionの取得に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
+
+
+def close_entry(sym, ty, qua, side_position):
+    """
+    close処理
+    :param sym:symbol
+    :param ty: type 'MARKET'
+    :param qua: quantity
+    :param side_position: buy or sell
+    """
+    # 1:longポジション
+    if side_position == 1:
+        close_entry(sym, Client.SIDE_SELL, ty, qua)
+        msg = "close long success!!"
+        logger.info(msg)
+    # 2:shortポジション
+    elif side_position == 2:
+        close_entry(sym, Client.SIDE_BUY, ty, qua)
+        msg = "close entry success!!"
+        logger.info(msg)
+
+
+def entry(sym, ty, qua, judge_status):
+    """
+    entry処理
+    :param judge_status: 1:long 2:short
+    :param sym:symbol
+    :param ty: type
+    :param qua: quantity
+    """
+    # long entry
+    if judge_status == 1:
+        create_long_entry(sym, Client.SIDE_BUY, ty, qua)
+        msg = "long entry success!!"
+        logger.info(msg)
+    # short entry
+    elif judge_status == 2:
+        close_short_entry(sym, Client.SIDE_SELL, ty, qua)
+        msg = "short entry success!!"
+        logger.info(msg)
+
 
 
 # local 動作確認用
