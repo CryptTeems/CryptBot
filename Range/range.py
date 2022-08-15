@@ -96,9 +96,9 @@ def main():
                 # 0:no_positionはなにもしない
                 close_entry(pr.symbol, "MARKET", volume, current_side)
 
-            msg = str(current_side) + statu_queue + str(entry_status_que) + short + str(
+                msg = str(current_side) + statu_queue + str(entry_status_que) + short + str(
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
-            logger.info(msg)
+                logger.info(msg)
 
         except BinanceAPIException as e:
             logger.error(e.status_code)
