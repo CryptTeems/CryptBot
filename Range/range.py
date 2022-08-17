@@ -51,7 +51,7 @@ def main():
     logger.info("バッチの実行が開始されました")
 
     # entryを行うためのステータスを３つもつ配列
-    entry_status_que = [0, 0, 0]
+    chart_status_que = [0, 0, 0]
 
     while True:
         # 1sおきに実行
@@ -76,27 +76,29 @@ def main():
             current_side = current_position_side(pr.symbol)
 
             # entryQueueの初期化処理
-            while entry_status_que[0] == 0 or entry_status_que[1] == 0 or entry_status_que[2] == 0:
-                entry_status_que = init_entry_status_que(entry_status_que, avg_status)
+            while chart_status_que[0] == 0 or chart_status_que[1] == 0 or chart_status_que[2] == 0:
+                chart_status_que = init_chart_status_que(chart_status_que, avg_status)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
-            if entry_status_que[2] != avg_status:
+            if chart_status_que[2] != avg_status:
                 # Queue履歴更新
-                update_entry_status_que(entry_status_que, avg_status)
+                update_chart_status_que(chart_status_que, avg_status)
 
                 # entry判定
                 # 1:long 2:short 0:stay
-                entry_result = judge_entry_point(entry_status_que)
+                judgment_entry_result = judge_entry(chart_status_que)
+
+                # close判定
+                # 0:stay 1:close long 2:close short
+                judgment_close_result = judge_close(chart_status_que)
 
                 # entry
-                # 0:stayはなにもしない
-                entry(pr.symbol, "MARKET", volume, entry_result)
+                entry(pr.symbol, "MARKET", volume, judgment_entry_result)
 
                 # ポジションを解除
-                # 0:no_positionはなにもしない
-                close_entry(pr.symbol, "MARKET", volume, current_side)
+                close_entry(pr.symbol, "MARKET", volume, current_side, judgment_close_result)
 
-                msg = str(current_side) + statu_queue + str(entry_status_que) + short + str(
+                msg = str(current_side) + statu_queue + str(chart_status_que) + short + str(
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
                 logger.info(msg)
 
@@ -131,14 +133,14 @@ def calc_moving_avg(chart_datas, duration, chart_data_max):
     return sma_avg / duration
 
 
-def update_entry_status_que(entry_status_ques, avg_status):
+def update_chart_status_que(chart_status_que, avg_status):
     """
     chartから取得した、ステータスポジション履歴の更新
     :return: entry_status_que
     """
-    del entry_status_ques[0]
-    entry_status_ques.append(avg_status)
-    return entry_status_ques
+    del chart_status_que[0]
+    chart_status_que.append(avg_status)
+    return chart_status_que
 
 
 def set_entry_status(short_avg, mid_avg, long_avg):
@@ -165,27 +167,45 @@ def set_entry_status(short_avg, mid_avg, long_avg):
         now_chart_status = 6
     return now_chart_status
 
-def init_entry_status_que(que, status):
+
+def init_chart_status_que(que, status):
     """
-    entry_status_queueの初期化処理
-    :param que:entry_status_queue
+    chart_status_queの初期化処理
+    :param que:chart_status_que
     :param status: chart_status
     :return: que
     """
-    status_queue = update_entry_status_que(que, status)
+    status_queue = update_chart_status_que(que, status)
     return status_queue
 
-def judge_entry_point(enry_status_que):
+
+def judge_entry(chart_status_que):
     """
     トレンド変換の判定
-    条件：
-    enry_status_queステータスが⑤⑥①の順番になった初回:long
-    enry_status_queステータスが②③④の順番になった初回:short
-    それ意外:stay
+    :return
+        chart_status_queステータスが⑤⑥①:long
+        chart_status_queステータスが②③④:short
+        それ意外:stay
     """
-    if enry_status_que[0] == 5 and enry_status_que[1] == 6 and enry_status_que[2] == 1:
+    if chart_status_que[0] == 5 and chart_status_que[1] == 6 and chart_status_que[2] == 1:
         return 1
-    elif enry_status_que[0] == 2 and enry_status_que[1] == 3 and enry_status_que[2] == 4:
+    elif chart_status_que[0] == 2 and chart_status_que[1] == 3 and chart_status_que[2] == 4:
+        return 2
+    else:
+        return 0
+
+
+def judge_close(chart_status_que):
+    """
+    judge close position
+    :return
+        chart_status_queステータスが①②③:close long
+        chart_status_queステータスが④⑤⑥:close short
+        それ意外:stay
+    """
+    if chart_status_que[0] == 1 and chart_status_que[1] == 2 and chart_status_que[2] == 3:
+        return 1
+    elif chart_status_que[0] == 4 and chart_status_que[1] == 5 and chart_status_que[2] == 6:
         return 2
     else:
         return 0
@@ -263,22 +283,23 @@ def current_position_side(sym):
         logger.error(e.message)
 
 
-def close_entry(sym, ty, qua, side_position):
+def close_entry(sym, ty, qua, side_position, judgment_close_result):
     """
     close処理
+    :param judgment_close_result: close判断結果
     :param sym:symbol
     :param ty: type 'MARKET'
     :param qua: quantity
     :param side_position: buy or sell
     """
-    # 1:longポジション
-    if side_position == 1:
-        close_entry(sym, Client.SIDE_SELL, ty, qua)
+    # 1:close long
+    if judgment_close_result == 1 and side_position == 1:
+        close_long_entry(sym, Client.SIDE_SELL, ty, qua)
         msg = "close long success!!"
         logger.info(msg)
-    # 2:shortポジション
-    elif side_position == 2:
-        close_entry(sym, Client.SIDE_BUY, ty, qua)
+    # 2:close short
+    elif judgment_close_result == 2 and side_position == 2:
+        close_short_entry(sym, Client.SIDE_BUY, ty, qua)
         msg = "close entry success!!"
         logger.info(msg)
 
@@ -301,7 +322,6 @@ def entry(sym, ty, qua, judge_status):
         close_short_entry(sym, Client.SIDE_SELL, ty, qua)
         msg = "short entry success!!"
         logger.info(msg)
-
 
 
 # local 動作確認用
