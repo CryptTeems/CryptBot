@@ -71,16 +71,16 @@ def main():
             # 現在の平均線からステータスポジションの取得
             avg_status = set_entry_status(df_short_avg, df_medium_avg, df_long_avg)
 
-            # 今のpositionの取得
-            # 0:no_position 1:long 2:short
-            current_side = current_position_side(pr.symbol)
-
             # entryQueueの初期化処理
             while chart_status_que[0] == 0 or chart_status_que[1] == 0 or chart_status_que[2] == 0:
                 chart_status_que = init_chart_status_que(chart_status_que, avg_status)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             if chart_status_que[2] != avg_status:
+                # 今のpositionの取得
+                # 0:no_position 1:long 2:short
+                current_side = current_position_side(pr.symbol)
+
                 # Queue履歴更新
                 update_chart_status_que(chart_status_que, avg_status)
 
@@ -92,15 +92,20 @@ def main():
                 # 0:stay 1:close long 2:close short
                 judgment_close_result = judge_close(chart_status_que)
 
+                msg = current_side_msg + str(current_side) + statu_queue + str(chart_status_que) + short + str(
+                    df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
+                logger.info(msg)
+
+                # todo 消す
+                msg = "current_side:" + str(current_side) + "judgment_entry_result" + \
+                      str(judgment_entry_result) + "judgment_close_result_result" + str(judgment_close_result)
+                logger.info(msg)
+
                 # entry
                 entry(pr.symbol, "MARKET", volume, judgment_entry_result)
 
                 # ポジションを解除
                 close_entry(pr.symbol, "MARKET", volume, current_side, judgment_close_result)
-
-                msg = str(current_side) + statu_queue + str(chart_status_que) + short + str(
-                    df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
-                logger.info(msg)
 
         except BinanceAPIException as e:
             logger.error(e.status_code)
@@ -300,7 +305,7 @@ def close_entry(sym, ty, qua, side_position, judgment_close_result):
     # 2:close short
     elif judgment_close_result == 2 and side_position == 2:
         close_short_entry(sym, Client.SIDE_BUY, ty, qua)
-        msg = "close entry success!!"
+        msg = "close short success!!"
         logger.info(msg)
 
 
