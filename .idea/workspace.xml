@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range/range.py" beforeDir="false" afterPath="$PROJECT_DIR$/Range/range.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range/to be replaced" beforeDir="false" afterPath="$PROJECT_DIR$/Range/to be replaced" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analysis/analysis_range.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/analysis_range.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +173,21 @@
       <option name="project" value="LOCAL" />
       <updated>1660747503821</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="make Master">
+      <created>1660970545746</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1660970545746</updated>
+    </task>
+    <task id="LOCAL-00010" summary="make Master">
+      <created>1660970563330</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1660970563330</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
