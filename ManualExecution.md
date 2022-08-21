@@ -65,6 +65,8 @@ https://www.binance.com/ja/my/orders/futures/tradehistory
 client = Client(api_key, api_secret, testnet=True)
 ```
 
+- init インタープリター設定
+-- c
 
 info = client.futures_income_history()
 print(json.dumps(info, indent=4))
