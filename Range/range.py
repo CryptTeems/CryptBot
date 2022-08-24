@@ -2,8 +2,6 @@ import time
 import properties as pr
 import json
 from logging import getLogger, config
-
-# layer import
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 
@@ -18,8 +16,6 @@ ENTRY_STATUS3 = "3"
 ENTRY_STATUS4 = "4"
 ENTRY_STATUS5 = "5"
 ENTRY_STATUS6 = "6"
-
-
 
 # 取引ボリューム
 volume = 800

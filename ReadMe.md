@@ -66,7 +66,11 @@ client = Client(api_key, api_secret, testnet=True)
 ```
 
 - init インタープリター設定
--- c
+```
+実行環境をusr/binのPythonに変更
+cloneしたリポジトリ配下で python3 -m venv rangebot/env
+source /Users/iwasakitakashidai/IdeaProjects/RangeBot/rangebot/env/bin/activate
+```
 
 info = client.futures_income_history()
 print(json.dumps(info, indent=4))
