@@ -18,7 +18,7 @@ ENTRY_STATUS5 = "5"
 ENTRY_STATUS6 = "6"
 
 # 取引ボリューム
-volume = 800
+volume = 200
 
 # client
 binance = Client(pr.API_KEY, pr.SECRET_KEY, {"timeout": 20})
@@ -188,7 +188,7 @@ def judge_entry(chart_status_que):
         chart_status_queステータスが②③④:short
         それ意外:stay
     """
-    if chart_status_que[0] == 5 and chart_status_que[1] == 6 and chart_status_que[2] == 1:
+    if chart_status_que[0] == 4 and chart_status_que[1] == 5 and chart_status_que[2] == 6:
         return 1
     elif chart_status_que[0] == 2 and chart_status_que[1] == 3 and chart_status_que[2] == 4:
         return 2
