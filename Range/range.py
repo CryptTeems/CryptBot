@@ -184,13 +184,13 @@ def judge_entry(chart_status_que):
     """
     トレンド変換の判定
     :return
-        chart_status_queステータスが⑤⑥①:long
-        chart_status_queステータスが②③④:short
+        chart_status_queステータスが④⑤⑥:long
+        chart_status_queステータスが①②③:short
         それ意外:stay
     """
     if chart_status_que[0] == 4 and chart_status_que[1] == 5 and chart_status_que[2] == 6:
         return 1
-    elif chart_status_que[0] == 2 and chart_status_que[1] == 3 and chart_status_que[2] == 4:
+    elif chart_status_que[0] == 1 and chart_status_que[1] == 2 and chart_status_que[2] == 3:
         return 2
     else:
         return 0
