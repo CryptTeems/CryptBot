@@ -8,7 +8,7 @@ sudo rm -r avgbot_app/
 python3 -m venv avgbot_app/env
 source ~/avgbot_app/env/bin/activate
 pip install pip --upgrade
-git clone https://github.com/shoo5123/RangeBot.git
+git clone https://github.com/CryptTeems/RangeBot.git
 pip install python-binance
 cd /home/ec2-user/RangeBot/Range
 cp /dev/null to\ be\ replaced 
