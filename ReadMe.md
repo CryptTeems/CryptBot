@@ -51,6 +51,7 @@ print(json.dumps(info, indent=4))
 order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='MARKET', quantity=100)
 order = client.futures_create_order(symbol="MATICUSDT", side="SELL", type='MARKET', quantity=6)
 order = client.futures_position_information(symbol="MATICUSDT")
+now_order = client.futures_position_information(symbol="MATICUSDT")
 ```
 
 - 集計用

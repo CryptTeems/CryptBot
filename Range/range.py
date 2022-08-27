@@ -73,9 +73,14 @@ def main():
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             if chart_status_que[2] != avg_status:
-                # 今のpositionの取得
+                # 現在のpositionの取得
+                now_order = binance.futures_position_information(pr.symbol)
+
+                # currentSide判定
                 # 0:no_position 1:long 2:short
-                current_side = current_position_side(pr.symbol)
+                current_side = current_position_side(now_order)
+                # current volume判定
+                current_volume = get_current_quantity(now_order)
 
                 # Queue履歴更新
                 update_chart_status_que(chart_status_que, avg_status)
@@ -101,7 +106,7 @@ def main():
                 entry(pr.symbol, "MARKET", volume, judgment_entry_result)
 
                 # ポジションを解除
-                close_entry(pr.symbol, "MARKET", volume, current_side, judgment_close_result)
+                close_entry(pr.symbol, "MARKET", current_volume, current_side, judgment_close_result)
 
         except BinanceAPIException as e:
             logger.error(e.status_code)
@@ -260,15 +265,14 @@ def close_short_entry(sym, si, ty, qua):
         logger.error(e.message)
 
 
-def current_position_side(sym):
+def current_position_side(order):
     """
     保持しているオーダーのsideを判定
     :return: 0:no_position 1:long_position 2:short_position
     """
     try:
         # current_position_orderの取得
-        now_order = binance.futures_position_information(symbol=sym)
-        position_amt = now_order[0]["positionAmt"]
+        position_amt = order[0]["positionAmt"]
 
         # side判定
         if int(position_amt) == 0:
@@ -280,6 +284,22 @@ def current_position_side(sym):
 
     except BinanceAPIException as e:
         logger.error("positionの取得に失敗しました")
+        logger.error(e.status_code)
+        logger.error(e.message)
+
+
+def get_current_quantity(order):
+    """
+    保持しているオーダーのquantityを判定
+    :return: quantity
+    """
+    try:
+        # current_position_orderの取得
+        position_amt = order[0]["positionAmt"]
+        return abs(position_amt)
+
+    except BinanceAPIException as e:
+        logger.error("現在のボリューム取得に失敗しました")
         logger.error(e.status_code)
         logger.error(e.message)
 
