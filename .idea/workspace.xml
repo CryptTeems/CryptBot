@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range/range.py" beforeDir="false" afterPath="$PROJECT_DIR$/Range/range.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Range/to be replaced" beforeDir="false" afterPath="$PROJECT_DIR$/Range/to be replaced" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ReadMe.md" beforeDir="false" afterPath="$PROJECT_DIR$/ReadMe.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +36,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "project.structure.last.edited": "SDK",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.4",
     "settings.editor.selected.configurable": "Errors"
   }
 }]]></component>
@@ -62,7 +64,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="python range.py" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="python range.py" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="RangeBot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -111,6 +113,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.python range.py" />
         <item itemvalue="Python.range" />
         <item itemvalue="Python.AWS_SecretManager_client" />
         <item itemvalue="Python.AWS_SecretManager_client" />
@@ -204,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661580500613</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="make Master">
+      <created>1661592780999</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1661592780999</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

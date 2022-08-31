@@ -43,6 +43,7 @@ sudo systemctl status awslogsd
 python3
 from binance.client import Client
 client = Client('7MlQofOjfeh6l4lxtGaqLqr04IAxwimmuqYobvozpBmqipd259dZxxHs1tBVu70a','eIIwHSRH6bpKAlAmAfhVDMjt1pmRopvSp54uC9fVF09PnYmCwS4ye2rwpsfsWOa3')
+client.get_historical_klines('BNBBTC', Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
 import json
 depth = client.get_order_book(symbol='BNBBTC')
 trades = client.get_recent_trades(symbol='BNBBTC')
