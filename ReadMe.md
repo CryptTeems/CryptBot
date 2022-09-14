@@ -44,6 +44,7 @@ python3
 from binance.client import Client
 client = Client('7MlQofOjfeh6l4lxtGaqLqr04IAxwimmuqYobvozpBmqipd259dZxxHs1tBVu70a','eIIwHSRH6bpKAlAmAfhVDMjt1pmRopvSp54uC9fVF09PnYmCwS4ye2rwpsfsWOa3')
 client.get_historical_klines('BNBBTC', Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
+now_order = client.futures_position_information(symbol='ETHUSDT')
 import json
 depth = client.get_order_book(symbol='BNBBTC')
 trades = client.get_recent_trades(symbol='BNBBTC')
@@ -76,3 +77,7 @@ source /Users/iwasakitakashidai/IdeaProjects/RangeBot/rangebot/env/bin/activate
 
 info = client.futures_income_history()
 print(json.dumps(info, indent=4))
+
+
+print(type(now_order[0]["positionAmt"]))
+print(int(float(now_order[0]["positionAmt"])))
