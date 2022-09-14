@@ -71,11 +71,12 @@ def main():
             # entryQueueの初期化処理
             while chart_status_que[0] == 0 or chart_status_que[1] == 0 or chart_status_que[2] == 0:
                 chart_status_que = init_chart_status_que(chart_status_que, avg_status)
+            logger.info(chart_status_que)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             if chart_status_que[2] != avg_status:
                 # 現在のpositionの取得
-                now_order = binance.futures_position_information(pr.symbol)
+                now_order = binance.futures_position_information(symbol=pr.symbol)
 
                 # currentSide判定
                 # 0:no_position 1:long 2:short
@@ -96,11 +97,6 @@ def main():
 
                 msg = current_side_msg + str(current_side) + statu_queue + str(chart_status_que) + short + str(
                     df_short_avg) + medium + str(df_medium_avg) + long + str(df_long_avg)
-                logger.info(msg)
-
-                # todo 消す
-                msg = "current_side:" + str(current_side) + "judgment_entry_result" + \
-                      str(judgment_entry_result) + "judgment_close_result_result" + str(judgment_close_result)
                 logger.info(msg)
 
                 # entry
@@ -273,15 +269,15 @@ def current_position_side(order):
     """
     try:
         # current_position_orderの取得
-        position_amt = order[0]["positionAmt"]
+        position_amt = float(order[0]["positionAmt"])
 
         # side判定
-        if int(position_amt) == 0:
-            return 0
-        elif int(position_amt) > 0:
+        if int(position_amt) > 0:
             return 1
         elif int(position_amt) < 0:
             return 2
+        else:
+            return 0
 
     except BinanceAPIException as e:
         logger.error("positionの取得に失敗しました")
@@ -296,7 +292,7 @@ def get_current_quantity(order):
     """
     try:
         # current_position_orderの取得
-        position_amt = order[0]["positionAmt"]
+        position_amt = float(order[0]["positionAmt"])
         return abs(position_amt)
 
     except BinanceAPIException as e:
