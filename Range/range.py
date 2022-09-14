@@ -219,6 +219,8 @@ def create_long_entry(sym, si, ty, qua):
     """
     try:
         binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
+        msg = "long entry success!!"
+        logger.info(msg)
     except BinanceAPIException as e:
         logger.error("long注文に失敗しました")
         logger.error(e.status_code)
@@ -255,6 +257,8 @@ def close_short_entry(sym, si, ty, qua):
     """
     try:
         binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
+        msg = "short entry success!!"
+        logger.info(msg)
     except BinanceAPIException as e:
         logger.error("shortポジションの精算に失敗しました")
         logger.error(e.status_code)
@@ -332,13 +336,9 @@ def entry(sym, ty, qua, judge_status):
     # long entry
     if judge_status == 1:
         create_long_entry(sym, Client.SIDE_BUY, ty, qua)
-        msg = "long entry success!!"
-        logger.info(msg)
     # short entry
     elif judge_status == 2:
         close_short_entry(sym, Client.SIDE_SELL, ty, qua)
-        msg = "short entry success!!"
-        logger.info(msg)
 
 
 # local 動作確認用

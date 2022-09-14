@@ -2,7 +2,7 @@
 - ソース入れ替えしたときの再実行手順
 - todo shell化
 ```
-ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
+    ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
 sudo rm -r RangeBot/
 sudo rm -r avgbot_app/
 python3 -m venv avgbot_app/env
