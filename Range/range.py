@@ -71,7 +71,6 @@ def main():
             # entryQueueの初期化処理
             while chart_status_que[0] == 0 or chart_status_que[1] == 0 or chart_status_que[2] == 0:
                 chart_status_que = init_chart_status_que(chart_status_que, avg_status)
-            logger.info(chart_status_que)
 
             # 直前のチャートステータスと差分がある場合、Queueの更新とentryのジャッジを行う
             if chart_status_que[2] != avg_status:
