@@ -2,13 +2,13 @@
 - ソース入れ替えしたときの再実行手順
 - todo shell化
 ```
-    ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
+ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
 sudo rm -r RangeBot/
 sudo rm -r avgbot_app/
 python3 -m venv avgbot_app/env
 source ~/avgbot_app/env/bin/activate
 pip install pip --upgrade
-git clone https://github.com/CryptTeems/RangeBot.git
+git clone https://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@github.com/CryptTeems/RangeBot.git 
 pip install python-binance
 cd /home/ec2-user/RangeBot/Range
 cp /dev/null to\ be\ replaced 
@@ -81,3 +81,5 @@ print(json.dumps(info, indent=4))
 
 print(type(now_order[0]["positionAmt"]))
 print(int(float(now_order[0]["positionAmt"])))
+
+

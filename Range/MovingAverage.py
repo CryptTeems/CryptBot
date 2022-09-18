@@ -5,6 +5,8 @@ from logging import getLogger, config
 import binance
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
+from infra import Settlement as st
+from infra import TickerInfo as ticker
 
 duration_short_term = 7  # 短期線間隔
 duration_medium_term = 25  # 中期線間隔
@@ -35,9 +37,7 @@ current_side_msg = "current_side:"
 # todo logRename path変更
 with open('../log/log_config.json', 'r') as f:
     log_conf = json.load(f)
-
 config.dictConfig(log_conf)
-
 logger = getLogger(__name__)
 
 
@@ -55,15 +55,15 @@ def main():
         time.sleep(1)
         try:
             # chartDataの取得
-            chart_data = get_chart_data()
+            chart_data = ticker.get_chart_data()
 
             # 1分足のローソクの本数
             chart_data_max = len(chart_data) - 1
 
             # 短中長の移動平均線取得
-            df_short_avg = calc_moving_avg(chart_data, duration_short_term, chart_data_max)
-            df_medium_avg = calc_moving_avg(chart_data, duration_medium_term, chart_data_max)
-            df_long_avg = calc_moving_avg(chart_data, duration_long_term, chart_data_max)
+            df_short_avg = ticker.calc_moving_avg(chart_data, duration_short_term, chart_data_max)
+            df_medium_avg = ticker.calc_moving_avg(chart_data, duration_medium_term, chart_data_max)
+            df_long_avg = ticker.calc_moving_avg(chart_data, duration_long_term, chart_data_max)
 
             # 現在の平均線からステータスポジションの取得
             avg_status = set_entry_status(df_short_avg, df_medium_avg, df_long_avg)
@@ -79,9 +79,9 @@ def main():
 
                 # currentSide判定
                 # 0:no_position 1:long 2:short
-                current_side = current_position_side(now_order)
+                current_side = st.current_position_side(now_order)
                 # current volume判定
-                current_volume = get_current_quantity(now_order)
+                current_volume = st.get_current_quantity(now_order)
 
                 # Queue履歴更新
                 update_chart_status_que(chart_status_que, avg_status)
@@ -109,30 +109,6 @@ def main():
             logger.error(e.message)
         finally:
             del chart_data
-
-
-def get_chart_data():
-    """
-    1分足を1日分取得
-    :return: data
-    """
-    data = None
-    try:
-        while data is None:
-            data = binance.get_historical_klines(pr.symbol, Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
-            return data
-    except:
-        logger.error("チャートデータの取得に失敗しました")
-
-
-def calc_moving_avg(chart_datas, duration, chart_data_max):
-    """
-    移動平均値を求める
-    """
-    sma_avg = 0
-    for index in range(duration):
-        sma_avg = sma_avg + float(chart_datas[chart_data_max - index][4])
-    return sma_avg / duration
 
 
 def update_chart_status_que(chart_status_que, avg_status):
@@ -213,97 +189,6 @@ def judge_close(chart_status_que):
         return 0
 
 
-def create_long_entry(sym, si, ty, qua):
-    """
-    long entry
-    """
-    try:
-        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
-        msg = "long entry success!!"
-        logger.info(msg)
-    except BinanceAPIException as e:
-        logger.error("long注文に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
-def create_short_entry(sym, si, ty, qua):
-    """
-    short entry
-    """
-    try:
-        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
-    except BinanceAPIException as e:
-        logger.error("short注文に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
-def close_long_entry(sym, si, ty, qua):
-    """
-    long close
-    """
-    try:
-        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
-    except BinanceAPIException as e:
-        logger.error("longポジションの精算に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
-def close_short_entry(sym, si, ty, qua):
-    """
-    short close
-    """
-    try:
-        binance.futures_create_order(symbol=sym, side=si, type=ty, quantity=qua)
-        msg = "short entry success!!"
-        logger.info(msg)
-    except BinanceAPIException as e:
-        logger.error("shortポジションの精算に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
-def current_position_side(order):
-    """
-    保持しているオーダーのsideを判定
-    :return: 0:no_position 1:long_position 2:short_position
-    """
-    try:
-        # current_position_orderの取得
-        position_amt = float(order[0]["positionAmt"])
-
-        # side判定
-        if int(position_amt) > 0:
-            return 1
-        elif int(position_amt) < 0:
-            return 2
-        else:
-            return 0
-
-    except BinanceAPIException as e:
-        logger.error("positionの取得に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
-def get_current_quantity(order):
-    """
-    保持しているオーダーのquantityを判定
-    :return: quantity
-    """
-    try:
-        # current_position_orderの取得
-        position_amt = float(order[0]["positionAmt"])
-        return abs(position_amt)
-
-    except BinanceAPIException as e:
-        logger.error("現在のボリューム取得に失敗しました")
-        logger.error(e.status_code)
-        logger.error(e.message)
-
-
 def close_entry(sym, ty, qua, side_position, judgment_close_result):
     """
     close処理
@@ -315,12 +200,12 @@ def close_entry(sym, ty, qua, side_position, judgment_close_result):
     """
     # 1:close long
     if judgment_close_result == 1 and side_position == 1:
-        close_long_entry(sym, Client.SIDE_SELL, ty, qua)
+        st.close_long_entry(sym, Client.SIDE_SELL, ty, qua)
         msg = "close long success!!"
         logger.info(msg)
     # 2:close short
     elif judgment_close_result == 2 and side_position == 2:
-        close_short_entry(sym, Client.SIDE_BUY, ty, qua)
+        st.close_short_entry(sym, Client.SIDE_BUY, ty, qua)
         msg = "close short success!!"
         logger.info(msg)
 
@@ -335,10 +220,10 @@ def entry(sym, ty, qua, judge_status):
     """
     # long entry
     if judge_status == 1:
-        create_long_entry(sym, Client.SIDE_BUY, ty, qua)
+        st.create_long_entry(sym, Client.SIDE_BUY, ty, qua)
     # short entry
     elif judge_status == 2:
-        close_short_entry(sym, Client.SIDE_SELL, ty, qua)
+        st.close_short_entry(sym, Client.SIDE_SELL, ty, qua)
 
 
 # local 動作確認用
