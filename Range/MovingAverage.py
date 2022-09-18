@@ -1,5 +1,5 @@
 import time
-import properties as pr
+import MovingAverageProperties as pr
 import json
 from logging import getLogger, config
 import binance
