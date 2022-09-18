@@ -8,7 +8,6 @@ sudo rm -r cryptBot_app/
 python3 -m venv cryptBot_app/env
 source ~/cryptBot_app/env/bin/activate
 pip install pip --upgrade
-git clone https://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@github.com/CryptTeems/RangeBot.git 
 pip install python-binance
 cd /home/ec2-user/RangeBot/Range
 cp /dev/null log/MovingAverageLog
@@ -23,7 +22,13 @@ pip install pip --upgrade
 git clone https://github.com/shoo5123/RangeBot.git
 pip install python-binance
 ```
-
+- 環境変数の設定コマンド
+```
+export API_KEY='APIキー'
+export SECRET_KEY='SECRETキー'
+確認コマンド
+printenv
+```
 - ロググループ再セット
 - 参考　https://business.ntt-east.co.jp/content/cloudsolution/column-try-28.html
 ```
