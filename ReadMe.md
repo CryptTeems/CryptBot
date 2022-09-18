@@ -4,15 +4,15 @@
 ```
 ssh -i "avgBot.pem" ec2-user@ec2-54-250-247-187.ap-northeast-1.compute.amazonaws.com
 sudo rm -r RangeBot/
-sudo rm -r avgbot_app/
-python3 -m venv avgbot_app/env
-source ~/avgbot_app/env/bin/activate
+sudo rm -r cryptBot_app/
+python3 -m venv cryptBot_app/env
+source ~/cryptBot_app/env/bin/activate
 pip install pip --upgrade
 git clone https://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@github.com/CryptTeems/RangeBot.git 
 pip install python-binance
 cd /home/ec2-user/RangeBot/Range
-cp /dev/null to\ be\ replaced 
-nohup python3 /home/ec2-user/RangeBot/Range/range.py &
+cp /dev/null log/MovingAverageLog
+nohup python3 /home/ec2-user/RangeBot/Range/MovingAverage.py &
 ```
 - トラブル時のコマンド
 ```

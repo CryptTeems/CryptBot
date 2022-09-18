@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="589e7599-bdc3-4e1f-aa7a-c68992883be2" name="変更" comment="make Master">
-      <change afterPath="$PROJECT_DIR$/log/MovingAverageLog.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range/range.py" beforeDir="false" afterPath="$PROJECT_DIR$/Range/MovingAverage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Range/to be replaced" beforeDir="false" afterPath="$PROJECT_DIR$/infra/Settlement.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RangeBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CryptBot.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ReadMe.md" beforeDir="false" afterPath="$PROJECT_DIR$/ReadMe.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/log_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/log/log_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/outlog.txt" beforeDir="false" afterPath="$PROJECT_DIR$/infra/TickerInfo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/MovingAverageLog.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -358,7 +352,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663172287731</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="make Master">
+      <created>1663489061123</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1663489061123</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
