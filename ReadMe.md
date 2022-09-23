@@ -9,6 +9,7 @@ python3 -m venv cryptBot_app/env
 source ~/cryptBot_app/env/bin/activate
 pip install pip --upgrade
 pip install python-binance
+git clone https://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@github.com/CryptTeems/CryptBot.git
 cd /home/ec2-user/RangeBot/Range
 cp /dev/null log/MovingAverageLog
 nohup python3 /home/ec2-user/RangeBot/Range/MovingAverage.py &
@@ -58,7 +59,7 @@ print(json.dumps(info, indent=4))
 order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='MARKET', quantity=100)
 order = client.futures_create_order(symbol="MATICUSDT", side="SELL", type='MARKET', quantity=6)
 order = client.futures_position_information(symbol="MATICUSDT")
-now_order = client.futures_position_information(symbol="MATICUSDT")
+now_order = client.futures_position_information(symbol="MATICBUSD")
 ```
 
 - 集計用
@@ -88,3 +89,23 @@ print(type(now_order[0]["positionAmt"]))
 print(int(float(now_order[0]["positionAmt"])))
 
 
+
+order = client.futures_position_information(symbol="ETHBUSD")
+print(json.dumps(order, indent=2))
+
+futures_create_order
+
+order = client.futures_create_order(symbol="BTCUSDT", side="SELL", type='STOP', quantity=100)
+print(order)
+now_order = client.futures_position_information(symbol="MATICBUSD")
+print(now_order)
+
+# create order 
+order = client.futures_create_order(symbol="SANDBUSD", side="BUY", type='MARKET', quantity=10)
+# stop order
+order = client.futures_create_order(symbol="SANDBUSD", side="SELL",type='STOP_MARKET', quantity=10, stopPrice=0.82)
+now_order = client.futures_position_information(symbol="SANDBUSD")
+print(order)
+price = client.futures_mark_price(symbol="SANDBUSD")
+print(int(price['markPrice']) * 1)
+print() 
